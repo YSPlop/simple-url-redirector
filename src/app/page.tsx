@@ -28,7 +28,7 @@ interface Link {
   created_at: string;
 }
 
-const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'localhost:3000';
+const DOMAIN = process.env.URL || 'localhost:3000';
 
 export default function HomePage() {
   const [links, setLinks] = useState<Link[]>([]);
