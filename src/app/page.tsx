@@ -28,9 +28,9 @@ interface Link {
   created_at: string;
 }
 
-const DOMAIN = process.env.URL || 'localhost:3000';
-
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false);
+  const [domain, setDomain] = useState('localhost:3000');
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(true);
   const [slug, setSlug] = useState('');
@@ -51,6 +51,11 @@ export default function HomePage() {
     slug: '',
     destination: '',
   });
+
+  useEffect(() => {
+    setMounted(true);
+    setDomain(process.env.NEXT_PUBLIC_DOMAIN || 'localhost:3000');
+  }, []);
 
   const fetchLinks = async () => {
     try {
@@ -220,7 +225,7 @@ export default function HomePage() {
                 </label>
                 <div className="flex items-center">
                   <span className="text-muted-foreground text-sm mr-2">
-                    {DOMAIN}/
+                    {domain}/
                   </span>
                   <Input
                     id="slug"
@@ -314,7 +319,7 @@ export default function HomePage() {
                         rel="noopener noreferrer"
                         className="text-primary hover:underline flex items-center gap-1"
                       >
-                        {DOMAIN}/{link.slug}
+                        {domain}/{link.slug}
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </TableCell>
@@ -375,7 +380,7 @@ export default function HomePage() {
                 </label>
                 <div className="flex items-center">
                   <span className="text-muted-foreground text-sm mr-2">
-                    {DOMAIN}/
+                    {domain}/
                   </span>
                   <Input
                     id="edit-slug"
