@@ -30,7 +30,6 @@ interface Link {
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
-  const [domain, setDomain] = useState('localhost:3000');
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(true);
   const [slug, setSlug] = useState('');
@@ -38,6 +37,8 @@ export default function HomePage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentDomain, setCurrentDomain] = useState('');
+
   
   // Edit dialog state
   const [editDialog, setEditDialog] = useState<{
@@ -51,11 +52,6 @@ export default function HomePage() {
     slug: '',
     destination: '',
   });
-
-  useEffect(() => {
-    setMounted(true);
-    setDomain(process.env.NEXT_PUBLIC_DOMAIN || 'localhost:3000');
-  }, []);
 
   const fetchLinks = async () => {
     try {
@@ -75,6 +71,13 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchLinks();
+  }, []);
+
+  useEffect(() => {
+    // Ensure window is defined before accessing it
+    if (typeof window !== 'undefined') {
+      setCurrentDomain(window.location.origin); // Gets the protocol, hostname, and port
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -225,7 +228,7 @@ export default function HomePage() {
                 </label>
                 <div className="flex items-center">
                   <span className="text-muted-foreground text-sm mr-2">
-                    {domain}/
+                    {currentDomain}/
                   </span>
                   <Input
                     id="slug"
@@ -319,7 +322,7 @@ export default function HomePage() {
                         rel="noopener noreferrer"
                         className="text-primary hover:underline flex items-center gap-1"
                       >
-                        {domain}/{link.slug}
+                        {currentDomain}/{link.slug}
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </TableCell>
@@ -380,7 +383,7 @@ export default function HomePage() {
                 </label>
                 <div className="flex items-center">
                   <span className="text-muted-foreground text-sm mr-2">
-                    {domain}/
+                    {currentDomain}/
                   </span>
                   <Input
                     id="edit-slug"
